@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import Categories from "../components/Categories/Categories";
 import Sort from "../components/Sort/Sort";
