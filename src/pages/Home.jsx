@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { SearchContext } from "../App";
+import { setCategoryId } from "../redux/slices/filterSlice";
 
 import Categories from "../components/Categories/Categories";
 import Sort from "../components/Sort/Sort";
@@ -11,14 +13,20 @@ import Pagination from "../components/Pagination/Pagination";
 function Home() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categoryId, setCategoryId] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState({
     name: "популярности",
     sortProperty: "rating",
   });
 
+  const categoryId = useSelector((state) => state.filter.categoryId);
+  const dispatch = useDispatch();
+
   const { searchValue } = useContext(SearchContext);
+
+  const onClickCategory = (id) => {
+    dispatch(setCategoryId(id));
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -49,10 +57,7 @@ function Home() {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories
-          value={categoryId}
-          onClickCategory={(index) => setCategoryId(index)}
-        />
+        <Categories value={categoryId} onClickCategory={onClickCategory} />
         <Sort
           value={sortType}
           onChangeSortType={(index) => setSortType(index)}
