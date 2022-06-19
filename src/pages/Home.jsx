@@ -14,13 +14,10 @@ function Home() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState({
-    name: "популярности",
-    sortProperty: "rating",
-  });
 
-  const categoryId = useSelector((state) => state.filter.categoryId);
   const dispatch = useDispatch();
+  const { categoryId, sort } = useSelector((state) => state.filter);
+  const sortType = sort.sortProperty;
 
   const { searchValue } = useContext(SearchContext);
 
@@ -31,8 +28,8 @@ function Home() {
   useEffect(() => {
     setIsLoading(true);
 
-    const sortBy = sortType.sortProperty.replace("-", "");
-    const order = sortType.sortProperty.includes("-") ? `asc` : `desc`;
+    const sortBy = sortType.replace("-", "");
+    const order = sortType.includes("-") ? `asc` : `desc`;
     const category = categoryId > 0 ? `category=${categoryId}` : "";
     const seacrh = searchValue ? `&search=${searchValue}` : "";
 
@@ -58,10 +55,7 @@ function Home() {
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onClickCategory={onClickCategory} />
-        <Sort
-          value={sortType}
-          onChangeSortType={(index) => setSortType(index)}
-        />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzas}</div>
