@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setSort } from "../../redux/slices/filterSlice";
 
-const list = [
+export const list = [
   { name: "популярности (по убыв.)", sortProperty: "rating" },
   { name: "популярности (по возр.)", sortProperty: "-rating" },
   { name: "цене (по убыв.)", sortProperty: "price" },
