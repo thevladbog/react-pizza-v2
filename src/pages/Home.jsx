@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useContext, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import qs from "qs";
 
-import { SearchContext } from "../App";
 import {
+  selectFilter,
   setCategoryId,
   setCurrentPage,
   setFilters,
 } from "../redux/slices/filterSlice";
+import { fetchPizzas, selectPizzaData } from "../redux/slices/pizzasSlice";
 
 import Categories from "../components/Categories/Categories";
 import Sort from "../components/Sort/Sort";
@@ -17,7 +18,6 @@ import PizzaBlock from "../components/PizzaBlock/PizzaBlock";
 import SkeletonPizza from "../components/PizzaBlock/SkeletonPizza";
 import Pagination from "../components/Pagination/Pagination";
 import { list as sortList } from "../components/Sort/Sort";
-import { fetchPizzas } from "../redux/slices/pizzasSlice";
 
 function Home() {
   const isSearch = useRef(false);
@@ -26,29 +26,21 @@ function Home() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { categoryId, sort, currentPage } = useSelector(
-    (state) => state.filter
-  );
-  const { items, status } = useSelector((state) => state.pizza);
-
-  const { searchValue } = useContext(SearchContext);
+  const { categoryId, sort, currentPage, searchValue } =
+    useSelector(selectFilter);
+  const { items, status } = useSelector(selectPizzaData);
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
   };
 
-  const getPizzas = async () => {
+  const getPizzas = () => {
     const sortBy = sort.sortProperty.replace("-", "");
     const order = sort.sortProperty.includes("-") ? `asc` : `desc`;
     const category = categoryId > 0 ? `category=${categoryId}` : "";
     const seacrh = searchValue ? `&search=${searchValue}` : "";
 
-    try {
-      dispatch(fetchPizzas({ currentPage, category, sortBy, order, seacrh }));
-    } catch (error) {
-      console.log("ERROR", error);
-      alert("Ошибка при получении пицц");
-    }
+    dispatch(fetchPizzas({ currentPage, category, sortBy, order, seacrh }));
   };
 
   useEffect(() => {

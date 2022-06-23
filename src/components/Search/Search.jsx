@@ -1,35 +1,35 @@
-import { useContext, useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import debounce from "lodash.debounce";
+import { useDispatch } from "react-redux";
 
-import { SearchContext } from "../../App";
+import { setSearchValue } from "../../redux/slices/filterSlice";
 
 import styles from "./Search.module.scss";
-import { useState } from "react";
 
 function Search() {
   const [value, setValue] = useState("");
-  const { setSearchValue } = useContext(SearchContext);
+  const dispatch = useDispatch();
 
   const inputRef = useRef();
 
   const onClickClear = () => {
-    setSearchValue("");
+    dispatch(setSearchValue(""));
     setValue("");
     inputRef.current.focus();
-  };
-
-  const onChangeInput = (e) => {
-    setValue(e.target.value);
-    updateSearcValue(e.target.value);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateSearcValue = useCallback(
     debounce((str) => {
-      setSearchValue(str);
+      dispatch(setSearchValue(str));
     }, 300),
     []
   );
+
+  const onChangeInput = (e) => {
+    setValue(e.target.value);
+    updateSearcValue(e.target.value);
+  };
 
   return (
     <div className={styles.root}>

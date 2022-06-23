@@ -57,6 +57,9 @@ export const cartSlice = createSlice({
       const indexOfItem = state.items.indexOf(findItem);
 
       state.items.splice(indexOfItem, 1);
+      state.totalPrice = state.items.reduce((sum, obj) => {
+        return obj.price * obj.count + sum;
+      }, 0);
     },
     clearItem(state) {
       state.items = [];
@@ -64,6 +67,17 @@ export const cartSlice = createSlice({
     },
   },
 });
+
+export const selectCart = (state) => state.cart;
+export const selectCartItem =
+  ({ id, typeNames, activeType, sizes, activeSize }) =>
+  (state) =>
+    state.cart.items.find(
+      (obj) =>
+        obj.id === id &&
+        obj.type === typeNames[activeType] &&
+        obj.size === sizes[activeSize]
+    );
 
 export const { addItem, removeItem, clearItem, minusItem } = cartSlice.actions;
 
